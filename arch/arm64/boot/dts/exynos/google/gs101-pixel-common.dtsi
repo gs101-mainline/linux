@@ -10,6 +10,7 @@
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/regulator/samsung,s2mpg10-regulator.h>
 #include <dt-bindings/usb/pd.h>
 #include "gs101-pinctrl.h"
 #include "gs101.dtsi"
@@ -109,7 +110,342 @@
 		system-power-controller;
 		wakeup-source;
 
+		vinl1m-supply = <&s2mpg11_buck3s>;
+		vinl2m-supply = <&s2mpg11_buck3s>;
+		vinl3m-supply = <&s2mpg10_buck8m>;
+		vinl4m-supply = <&s2mpg10_buck9m>;
+		vinl5m-supply = <&s2mpg10_buck9m>;
+		vinl6m-supply = <&s2mpg10_buck9m>;
+		vinl7m-supply = <&s2mpg11_buck6s>;
+		vinl8m-supply = <&s2mpg11_buck6s>;
+		vinl9m-supply = <&s2mpg11_buck7s>;
+		vinl10m-supply = <&s2mpg11_buck7s>;
+		vinl11m-supply = <&s2mpg11_buck7s>;
+		vinl12m-supply = <&s2mpg11_bucka>;
+		vinl13m-supply = <&s2mpg11_bucka>;
+		vinl14m-supply = <&s2mpg11_buckboost>;
+		vinl15m-supply = <&s2mpg11_buckboost>;
+
+		clocks {
+			compatible = "samsung,s2mpg10-clk";
+			#clock-cells = <1>;
+			clock-output-names = "s2mpg10_ap", "s2mpg10_peri2",
+					     "s2mpg10_peri1";
+		};
+
 		regulators {
+			buck1m {
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN_MIF>;
+			};
+
+			buck2m {
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_CPUCL2_EN2>;
+			};
+
+			buck3m {
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_CPUCL1_EN2>;
+			};
+
+			buck4m {
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN>;
+			};
+
+			buck5m {
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN_MIF>;
+			};
+
+			buck6m {
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_CPUCL2_EN2>;
+			};
+
+			buck7m {
+				/* GPU */
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN_MIF>;
+			};
+
+			s2mpg10_buck8m: buck8m {
+				regulator-ramp-delay = <6250>;
+			};
+
+			s2mpg10_buck9m: buck9m {
+				regulator-ramp-delay = <6250>;
+			};
+
+			buck10m {
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_TPU_EN>;
+			};
+
+			ldo1m {
+				/* ALIVE, AOC PLL */
+			};
+
+			s2mpg10_ldo2m: ldo2m {
+				/* lots, DDR */
+			};
+
+			ldo3m {
+				/* IO (MIPI CSI & DSI), PLL CPUCL SHARED TPU UFS */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN_MIF>;
+			};
+
+			ldo4m {
+				/* IO (MIPI CSI & DSI, UFS, OTP, TS_SUB, TS_TOP, XOTP) */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN_MIF>;
+			};
+
+			ldo5m {
+				/* PLL (HSIO) */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_TCXO_ON>;
+			};
+
+			ldo6m {
+				/* PLL CPUCL & MIFx, UFS clk, MIPI DSI */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN_MIF>;
+			};
+
+			ldo7m {
+				/* IO (HSI) */
+			};
+
+			ldo8m {
+				/* USB */
+			};
+
+			ldo9m {
+				/* USB */
+			};
+
+			ldo10m {
+				/* USB */
+			};
+
+			ldo11m {
+				/* CPU(MID) */
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_CPUCL1_EN2>;
+			};
+
+			ldo12m {
+				/* CPU(LITTLE) */
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN>;
+			};
+
+			ldo13m {
+				/* TPU */
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_PCTRLSEL_TPU_EN>;
+			};
+
+			ldo14m {
+				/* PLL (for PCIe?) */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_TCXO_ON>;
+			};
+
+			ldo15m {
+				/* SLC (memory power (cache?)) */
+				regulator-ramp-delay = <12500>;
+			};
+
+			ldo16m {
+				/* PCIe */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_ON>;
+			};
+
+			ldo17m {
+				/* PCIe */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_ON>;
+			};
+
+			ldo18m {
+				/* PCIe */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_ON>;
+			};
+
+			ldo19m {
+				/* PCIe */
+				samsung,ext-control = <S2MPG10_PCTRLSEL_ON>;
+			};
+
+			ldo20m {
+				/* DMIC (memory power) */
+			};
+
+			ldo21m {
+				/* DTLS (dauntless)  */
+			};
+
+			ldo22m {
+				/* display */
+			};
+
+			ldo23m {
+				/* display */
+			};
+
+			ldo25m {
+				/* touch */
+			};
+
+			ldo26m {
+				/* touch */
+			};
+
+			ldo27m {
+				/* UDFPS (something with display) */
+			};
+
+			ldo28m {
+				/* display */
+			};
+
+			ldo31m {
+				/* NFC */
+			};
+
+		};
+	};
+
+	pmic2 {
+		compatible = "samsung,s2mpg11-pmic";
+		interrupts-extended = <&gpa0 7 IRQ_TYPE_LEVEL_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sub_pmic_int>;
+		wakeup-source;
+
+		vinl1s-supply = <&s2mpg10_buck8m>;
+		vinl2s-supply = <&s2mpg11_buck6s>;
+		vinl3s-supply = <&s2mpg11_buck7s>;
+		vinl4s-supply = <&s2mpg11_buck7s>;
+		vinl5s-supply = <&s2mpg11_buckboost>;
+		vinl6s-supply = <&s2mpg11_buckboost>;
+		vinbd-supply = <&s2mpg11_buckboost>;
+
+		regulators {
+			buck1s {
+				/* multimedia */
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG11_PCTRLSEL_PWREN_MIF>;
+			};
+
+			buck2s {
+				/* GPU */
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG11_PCTRLSEL_G3D_EN>;
+			};
+
+			s2mpg11_buck3s: buck3s {
+				regulator-ramp-delay = <6250>;
+			};
+
+			buck4s {
+				/* DDR */
+				regulator-ramp-delay = <6250>;
+			};
+
+			buck5s {
+				/* DDR */
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG11_PCTRLSEL_PWREN_MIF>;
+			};
+
+			s2mpg11_buck6s: buck6s {
+				regulator-ramp-delay = <6250>;
+			};
+
+			s2mpg11_buck7s: buck7s {
+				regulator-ramp-delay = <6250>;
+			};
+
+			buck8s {
+				/* GPU */
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG11_PCTRLSEL_G3D_EN>;
+			};
+
+			buck9s {
+				/* AOC */
+				regulator-ramp-delay = <12500>;
+			};
+
+			buck10s {
+				/* DDR */
+				regulator-ramp-delay = <6250>;
+			};
+
+			buckd {
+				/* UFS */
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG11_PCTRLSEL_UFS_EN>;
+				samsung,ext-control-gpios = <&gpp0 1 GPIO_ACTIVE_HIGH>;
+			};
+
+			s2mpg11_bucka: bucka {
+				/* lots, IO */
+				regulator-ramp-delay = <6250>;
+			};
+
+			s2mpg11_buckboost: buckboost {
+			};
+
+			ldo1s {
+				/* GPU */
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG11_PCTRLSEL_G3D_EN>;
+			};
+
+			ldo2s {
+				/* AOC */
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG11_PCTRLSEL_ON>;
+			};
+
+			ldo4s {
+				/* UWB (raven only) */
+			};
+
+			ldo6s {
+				/* Sensors */
+			};
+
+			ldo7s {
+				/* Sensors */
+			};
+
+			ldo8s {
+				/* UFS */
+				samsung,ext-control = <S2MPG11_PCTRLSEL_UFS_EN>;
+				samsung,ext-control-gpios = <&gpp0 1 GPIO_ACTIVE_HIGH>;
+			};
+
+			ldo9s {
+				/* GPS */
+			};
+
+			ldo10s {
+				/* GPS */
+			};
+
+			ldo11s {
+				/* GPS */
+			};
+
+			ldo13s {
+				/* display */
+				samsung,ext-control = <S2MPG11_PCTRLSEL_LDO13S_EN>;
+			};
+
+			ldo14s {
+				/* UWB */
+			};
 		};
 	};
 };
@@ -306,6 +642,12 @@
 &pinctrl_gpio_alive {
 	pmic_int: pmic-int-pins {
 		samsung,pins = "gpa0-6";
+		samsung,pin-function = <GS101_PIN_FUNC_EINT>;
+		samsung,pin-pud = <GS101_PIN_PULL_NONE>;
+	};
+
+	sub_pmic_int: sub-pmic-int-pins {
+		samsung,pins = "gpa0-7";
 		samsung,pin-function = <GS101_PIN_FUNC_EINT>;
 		samsung,pin-pud = <GS101_PIN_PULL_NONE>;
 	};
