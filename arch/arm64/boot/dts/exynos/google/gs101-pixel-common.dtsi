@@ -205,6 +205,9 @@
 				regulator-min-microvolt = <450000>;
 				regulator-max-microvolt = <1300000>;
 				regulator-ramp-delay = <6250>;
+				// needs to be on during boot, until all consumers have
+				// probed and established their links to this
+				regulator-boot-on;
 			};
 
 			s2mpg10_buck9m: buck9m {
@@ -212,6 +215,9 @@
 				regulator-min-microvolt = <450000>;
 				regulator-max-microvolt = <1300000>;
 				regulator-ramp-delay = <6250>;
+				// needs to be on during boot, until all consumers have
+				// probed and established their links to this
+				regulator-boot-on;
 			};
 
 			buck10m {
