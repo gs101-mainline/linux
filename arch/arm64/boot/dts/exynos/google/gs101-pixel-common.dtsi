@@ -10,6 +10,7 @@
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/regulator/samsung,s2mpg10-regulator.h>
 #include <dt-bindings/usb/pd.h>
 #include "gs101-pinctrl.h"
 #include "gs101.dtsi"
@@ -109,6 +110,22 @@
 		system-power-controller;
 		wakeup-source;
 
+		vinl1m-supply = <&s2mpg11_buck3s>;
+		vinl2m-supply = <&s2mpg11_buck3s>;
+		vinl3m-supply = <&s2mpg10_buck8m>;
+		vinl4m-supply = <&s2mpg10_buck9m>;
+		vinl5m-supply = <&s2mpg10_buck9m>;
+		vinl6m-supply = <&s2mpg10_buck9m>;
+		vinl7m-supply = <&s2mpg11_buck6s>;
+		vinl8m-supply = <&s2mpg11_buck6s>;
+		vinl9m-supply = <&s2mpg11_buck7s>;
+		vinl10m-supply = <&s2mpg11_buck7s>;
+		vinl11m-supply = <&s2mpg11_buck7s>;
+		vinl12m-supply = <&s2mpg11_bucka>;
+		vinl13m-supply = <&s2mpg11_bucka>;
+		vinl14m-supply = <&s2mpg11_buckboost>;
+		vinl15m-supply = <&s2mpg11_buckboost>;
+
 		clocks {
 			compatible = "samsung,s2mpg10-clk";
 			#clock-cells = <1>;
@@ -117,6 +134,439 @@
 		};
 
 		regulators {
+			buck1m {
+				regulator-name = "vdd_mif";
+				regulator-min-microvolt = <450000>;
+				regulator-max-microvolt = <1300000>;
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN_MIF>;
+				regulator-always-on;
+			};
+
+			buck2m {
+				regulator-name = "vdd_cpucl2";
+				regulator-min-microvolt = <450000>;
+				regulator-max-microvolt = <1300000>;
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_CPUCL2_EN2>;
+				regulator-always-on;
+			};
+
+			buck3m {
+				regulator-name = "vdd_cpucl1";
+				regulator-min-microvolt = <450000>;
+				regulator-max-microvolt = <1300000>;
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_CPUCL1_EN2>;
+				regulator-always-on;
+			};
+
+			buck4m {
+				regulator-name = "vdd_cpucl0";
+				regulator-min-microvolt = <450000>;
+				regulator-max-microvolt = <1300000>;
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN>;
+				regulator-always-on;
+			};
+
+			buck5m {
+				regulator-name = "vdd_int";
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN_MIF>;
+				regulator-always-on;
+			};
+
+			buck6m {
+				regulator-name = "vdd_cpucl2_m";
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_CPUCL2_EN2>;
+				regulator-always-on;
+			};
+
+			buck7m {
+				/* GPU */
+				regulator-name = "vdd_int_m";
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN_MIF>;
+			};
+
+			s2mpg10_buck8m: buck8m {
+				regulator-name = "lldo2";
+				regulator-ramp-delay = <6250>;
+				// needs to be on during boot, until all consumers have
+				// probed and established their links to this
+				regulator-boot-on;
+			};
+
+			s2mpg10_buck9m: buck9m {
+				regulator-name = "lldo3";
+				regulator-ramp-delay = <6250>;
+				// needs to be on during boot, until all consumers have
+				// probed and established their links to this
+				regulator-boot-on;
+			};
+
+			buck10m {
+				regulator-name = "vdd_tpu";
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_TPU_EN>;
+			};
+
+			ldo1m {
+				/* ALIVE, AOC PLL */
+				regulator-name = "vdd_l1m_alive";
+				regulator-always-on;
+			};
+
+			s2mpg10_ldo2m: ldo2m {
+				/* lots, DDR */
+				regulator-name = "vdd_l2m_alive";
+				regulator-always-on;
+			};
+
+			ldo3m {
+				/* AVDD: MIPI CSI & DSI, PLL: CPUCL SHARED TPU UFS */
+				regulator-name = "ldo3m";
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN_MIF>;
+				// we need always on otherwise things just hang
+				regulator-always-on;
+			};
+
+			ldo4m {
+				/* AVDD: MIPI CSI & DSI, UFS, OTP, TS_SUB, TS_TOP, XOTP */
+				regulator-name = "S2MPG10_LDO4 (IO, OTP)";
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN_MIF>;
+				// we need always on otherwise hard reset
+				regulator-always-on;
+			};
+
+			ldo5m {
+				/* VDD: ADD, AVDD: TCXO & TCXO_FAR */
+				regulator-name = "avdd075_tcxo";
+				samsung,ext-control = <S2MPG10_EXTCTRL_TCXO_ON>;
+				// we need always on otherwise UFS stops working
+				regulator-always-on;
+			};
+
+			ldo6m {
+				/* PLL CPUCL & MIFx, UFS clk, MIPI DSI */
+				regulator-name = "vdd_pll";
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN_MIF>;
+				// we need always on otherwise hang
+				regulator-always-on;
+			};
+
+			ldo7m {
+				/* IO (HSI (USB)) */
+				// TODO: link to HSI - vdd_hsi-supply
+				regulator-name = "vdd_hsi";
+				regulator-min-microvolt = <750000>;
+				regulator-max-microvolt = <750000>;
+				// without this, Linux hangs during USB access
+				regulator-always-on;
+			};
+
+			ldo8m {
+				/* USB */
+				regulator-name = "vdd085_usb";
+				regulator-min-microvolt = <850000>;
+				regulator-max-microvolt = <850000>;
+				regulator-always-on;
+			};
+
+			ldo9m {
+				/* USB */
+				regulator-name = "vdd18_usb";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+				regulator-always-on;
+			};
+
+			ldo10m {
+				/* USB */
+				regulator-name = "vdd33_usb";
+				regulator-min-microvolt = <3000000>;
+				regulator-max-microvolt = <3000000>;
+				regulator-always-on;
+			};
+
+			ldo11m {
+				/* CPU(MID) */
+				regulator-name = "vdd_cpucl1_m";
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_CPUCL1_EN2>;
+				// we need always on otherwise hang
+				regulator-always-on;
+			};
+
+			ldo12m {
+				/* CPU(LITTLE) */
+				regulator-name = "vdd_cpucl0_m";
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_PWREN>;
+				// we need always on otherwise hang
+				regulator-always-on;
+			};
+
+			ldo13m {
+				/* TPU */
+				regulator-name = "vdd_tpu_m";
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG10_EXTCTRL_TPU_EN>;
+			};
+
+			ldo14m {
+				/* PLL (for PCIe?) */
+				regulator-name = "avdd18_tcxo";
+				samsung,ext-control = <S2MPG10_EXTCTRL_TCXO_ON>;
+				regulator-boot-on;
+				// we need always on otherwise UFS stops working
+				regulator-always-on;
+			};
+
+			ldo15m {
+				/* SLC (memory power (cache?)) */
+				regulator-name = "vdd_slc_m";
+				regulator-ramp-delay = <12500>;
+				regulator-always-on;
+			};
+
+			ldo16m {
+				/* PCIe */
+				regulator-name = "vdd085_pcie0";
+				samsung,ext-control = <0x0>;
+			};
+
+			ldo17m {
+				/* PCIe */
+				regulator-name = "vdd085_pcie1";
+				samsung,ext-control = <0x0>;
+			};
+
+			ldo18m {
+				/* PCIe */
+				regulator-name = "vdd18_pcie0";
+				samsung,ext-control = <0x0>;
+			};
+
+			ldo19m {
+				/* PCIe */
+				regulator-name = "vdd18_pcie1";
+				samsung,ext-control = <0x0>;
+			};
+
+			ldo20m {
+				/* DMIC (memory power) */
+				regulator-name = "vddq_aoc_pdm";
+				regulator-always-on;
+			};
+
+			ldo21m {
+				/* DTLS (dauntless)  */
+				regulator-name = "vdd_dtls";
+				regulator-always-on;
+			};
+
+			ldo22m {
+				/* display */
+				regulator-name = "vci_disp";
+			};
+
+
+			ldo25m {
+				/* touch */
+				regulator-name = "dvdd_tsp";
+			};
+
+			ldo26m {
+				/* touch */
+				regulator-name = "avdd_ts";
+			};
+
+			ldo27m {
+				/* UDFPS (under-display fingerprint scanner) */
+				regulator-name = "avdd_udfps";
+			};
+
+			ldo28m {
+				/* display */
+				regulator-name = "S2MPG10_LDO28 (display)";
+			};
+
+			ldo31m {
+				/* NFC */
+				regulator-name = "nfc";
+			};
+
+		};
+	};
+
+	pmic2 {
+		compatible = "samsung,s2mpg11-pmic";
+		interrupts-extended = <&gpa0 7 IRQ_TYPE_LEVEL_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sub_pmic_int>;
+		wakeup-source;
+
+		vinl1s-supply = <&s2mpg10_buck8m>;
+		vinl2s-supply = <&s2mpg11_buck6s>;
+		vinl3s-supply = <&s2mpg11_buck7s>;
+		vinl4s-supply = <&s2mpg11_buck7s>;
+		vinl5s-supply = <&s2mpg11_buckboost>;
+		vinl6s-supply = <&s2mpg11_buckboost>;
+		vinbd-supply = <&s2mpg11_buckboost>;
+
+		regulators {
+			buck1s {
+				/* multimedia */
+				regulator-name = "vdd_cam";
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG11_EXTCTRL_PWREN_MIF>;
+				// always on, otherwise vibrator keeps buzzing
+				regulator-always-on;
+			};
+
+			buck2s {
+				/* GPU */
+				regulator-name = "vdd_g3d";
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG11_EXTCTRL_G3D_EN>;
+			};
+
+			s2mpg11_buck3s: buck3s {
+				regulator-name = "lldo1";
+				regulator-ramp-delay = <6250>;
+			};
+
+			buck4s {
+				/* DDR */
+				regulator-name = "vdd2h_mem";
+				regulator-ramp-delay = <6250>;
+				regulator-always-on;
+			};
+
+			buck5s {
+				/* DDR */
+				regulator-name = "vddq_mem";
+				regulator-min-microvolt = <400000>;
+				regulator-max-microvolt = <1300000>;
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG11_EXTCTRL_PWREN_MIF>;
+				regulator-always-on;
+			};
+
+			s2mpg11_buck6s: buck6s {
+				regulator-name = "lldo4";
+				regulator-ramp-delay = <6250>;
+			};
+
+			s2mpg11_buck7s: buck7s {
+				regulator-name = "mldo";
+				regulator-ramp-delay = <6250>;
+			};
+
+			buck8s {
+				/* GPU */
+				regulator-name = "vdd_g3d_l2";
+				regulator-ramp-delay = <12500>;
+				samsung,ext-control = <S2MPG11_EXTCTRL_G3D_EN>;
+				regulator-boot-on;
+			};
+
+			buck9s {
+				/* AOC */
+				regulator-name = "vdd_aoc";
+				regulator-ramp-delay = <12500>;
+				regulator-always-on;
+			};
+
+			buck10s {
+				/* DDR */
+				regulator-name = "vdd2l_mem";
+				regulator-ramp-delay = <6250>;
+				regulator-always-on;
+			};
+
+			buckd {
+				/* UFS, vcc */
+				regulator-name = "vcc_ufs";
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG11_EXTCTRL_UFS_EN>;
+				samsung,ext-control-gpios = <&gpp0 1 GPIO_ACTIVE_HIGH>;
+			};
+
+			s2mpg11_bucka: bucka {
+				/* lots, IO */
+				regulator-name = "bucka";
+				regulator-ramp-delay = <6250>;
+				regulator-always-on;
+			};
+
+			s2mpg11_buckboost: buckboost {
+				regulator-name = "buckboost";
+			};
+
+			ldo1s {
+				/* GPU */
+				regulator-name = "vdd_g3d_m";
+				regulator-ramp-delay = <6250>;
+				samsung,ext-control = <S2MPG11_EXTCTRL_G3D_EN>;
+			};
+
+			ldo2s {
+				/* AOC */
+				regulator-name = "vdd_aoc_ret";
+				regulator-ramp-delay = <12500>;
+				regulator-always-on;
+			};
+
+			ldo4s {
+				/* UWB (raven only) */
+				regulator-name = "vdd2_uwb";
+			};
+
+			ldo6s {
+				/* Sensors */
+				regulator-name = "vdd_prox";
+			};
+
+			ldo7s {
+				/* Sensors */
+				regulator-name = "vdd_sensors";
+			};
+
+			ldo8s {
+				/* UFS, vccq */
+				regulator-name = "vccq_ufs";
+				samsung,ext-control = <S2MPG11_EXTCTRL_UFS_EN>;
+				samsung,ext-control-gpios = <&gpp0 1 GPIO_ACTIVE_HIGH>;
+			};
+
+			ldo9s {
+				/* GPS */
+				regulator-name = "vdd_gnss";
+			};
+
+			ldo10s {
+				/* GPS */
+				regulator-name = "vdd_gnss_rf";
+			};
+
+			ldo11s {
+				/* GPS */
+				regulator-name = "vdd_gnss_aux";
+			};
+
+			ldo13s {
+				regulator-name = "vddq_mmc";
+				samsung,ext-control = <S2MPG11_EXTCTRL_LDO13S_EN>;
+			};
+
+			ldo14s {
+				/* UWB */
+				regulator-name = "vdd3_uwb";
+			};
 		};
 	};
 };
@@ -313,6 +763,12 @@
 &pinctrl_gpio_alive {
 	pmic_int: pmic-int-pins {
 		samsung,pins = "gpa0-6";
+		samsung,pin-function = <GS101_PIN_FUNC_EINT>;
+		samsung,pin-pud = <GS101_PIN_PULL_NONE>;
+	};
+
+	sub_pmic_int: sub-pmic-int-pins {
+		samsung,pins = "gpa0-7";
 		samsung,pin-function = <GS101_PIN_FUNC_EINT>;
 		samsung,pin-pud = <GS101_PIN_PULL_NONE>;
 	};
