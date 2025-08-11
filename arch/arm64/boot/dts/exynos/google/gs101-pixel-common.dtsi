@@ -164,10 +164,11 @@
 				samsung,ext-control = <S2MPG10_PCTRLSEL_CPUCL2_EN2>;
 			};
 
-			buck7m {
+			buck7m_reg: buck7m {
 				/* GPU */
 				regulator-ramp-delay = <6250>;
 				samsung,ext-control = <S2MPG10_PCTRLSEL_PWREN_MIF>;
+				regulator-always-on;
 			};
 
 			s2mpg10_buck8m: buck8m {
@@ -336,10 +337,11 @@
 				samsung,ext-control = <S2MPG11_PCTRLSEL_PWREN_MIF>;
 			};
 
-			buck2s {
+			buck2s_reg: buck2s {
 				/* GPU */
 				regulator-ramp-delay = <12500>;
 				samsung,ext-control = <S2MPG11_PCTRLSEL_G3D_EN>;
+				regulator-always-on;
 			};
 
 			s2mpg11_buck3s: buck3s {
@@ -365,10 +367,11 @@
 				regulator-ramp-delay = <6250>;
 			};
 
-			buck8s {
+			buck8s_reg: buck8s {
 				/* GPU */
 				regulator-ramp-delay = <12500>;
 				samsung,ext-control = <S2MPG11_PCTRLSEL_G3D_EN>;
+				regulator-always-on;
 			};
 
 			buck9s {
@@ -396,10 +399,11 @@
 			s2mpg11_buckboost: buckboost {
 			};
 
-			ldo1s {
+			ldo1s_reg: ldo1s {
 				/* GPU */
 				regulator-ramp-delay = <6250>;
 				samsung,ext-control = <S2MPG11_PCTRLSEL_G3D_EN>;
+				regulator-always-on;
 			};
 
 			ldo2s {
@@ -465,6 +469,13 @@
 		compatible = "atmel,24c08";
 		reg = <0x50>;
 	};
+};
+
+&gpu {
+     mali-supply = <&buck2s_reg>;
+     buck8s-supply = <&buck8s_reg>;
+     ldo1s-supply = <&ldo1s_reg>;
+     buck7m-supply = <&buck7m_reg>;
 };
 
 &hsi2c_12 {
