@@ -853,6 +853,15 @@ static const struct panfrost_compatible default_data = {
 	.pm_domain_names = NULL,
 };
 
+static const char * const gs101_supplies[] = { "mali", "buck8s", "ldo1s", "buck7m" };
+static const struct panfrost_compatible gs101_data = {
+	.num_supplies = ARRAY_SIZE(gs101_supplies) - 1,
+	.supply_names = gs101_supplies,
+	.num_pm_domains = 1, /* optional */
+	.pm_domain_names = NULL,
+};
+
+
 static const struct panfrost_compatible allwinner_h616_data = {
 	.num_supplies = ARRAY_SIZE(default_supplies) - 1,
 	.supply_names = default_supplies,
@@ -951,7 +960,7 @@ static const struct of_device_id dt_match[] = {
 	{ .compatible = "mediatek,mt8192-mali", .data = &mediatek_mt8192_data },
 	{ .compatible = "mediatek,mt8370-mali", .data = &mediatek_mt8370_data },
 	{ .compatible = "allwinner,sun50i-h616-mali", .data = &allwinner_h616_data },
-	{ .compatible = "google,gs101-mali", .data = &default_data },
+	{ .compatible = "google,gs101-mali", .data = &gs101_data },
 	{}
 };
 MODULE_DEVICE_TABLE(of, dt_match);
