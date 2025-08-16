@@ -468,6 +468,7 @@
 	num-cs = <1>;
 	spitouch: touchscreen@0 {
 		status = "disabled";
+		spi-max-frequency = <10000000>;
 		reg = <0>;
 		pinctrl-names = "ts_active", "ts_suspend";
 		pinctrl-0 = <&ts_irq &ts_reset &ap2aoc &aoc2ap_irq
