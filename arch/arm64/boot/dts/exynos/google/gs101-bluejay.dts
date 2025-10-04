@@ -28,6 +28,12 @@
 };
 
 &spitouch {
+	compatible = "st,fts";
+	status = "okay";
+
+	st,irq-gpio = <&gpa9 0 0>;
+	st,reset-gpio = <&gpp26 0 0>;
+	
 	st,dchip_id = /bits/ 8 <0x36 0x48>;
 	st,max-coords = <1079 2399>;
 	st,udfps-coords = <540 1717>;

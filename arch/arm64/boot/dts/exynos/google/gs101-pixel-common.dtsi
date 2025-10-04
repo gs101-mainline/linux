@@ -786,8 +786,6 @@
 	cs-gpios = <&gpp23 3 GPIO_ACTIVE_LOW>;
 	num-cs = <1>;
 	spitouch: touchscreen@0 {
-		compatible = "st,spi";
-		status = "okay";
 		spi-max-frequency = <10000000>;
 		reg = <0>;
 		pinctrl-names = "ts_active";
