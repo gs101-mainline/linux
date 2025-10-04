@@ -48,6 +48,7 @@
 #include <linux/completion.h>
 #include <linux/device.h>
 #include <linux/of.h>
+#include <linux/pinctrl/consumer.h>
 
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
@@ -2436,13 +2437,6 @@ static DEVICE_ATTR_RO(gesture_coordinates);
 #endif
 static DEVICE_ATTR_RW(autotune);
 
-static BIN_ATTR_RW(stm_fts_cmd, 0);
-
-static struct bin_attribute *fts_bin_attr_group[] = {
-	&bin_attr_stm_fts_cmd,
-	NULL,
-};
-
 static struct attribute *fts_attr_group[] = {
 	 &dev_attr_infoblock_getdata.attr,
 	&dev_attr_fwupdate.attr,
@@ -2908,7 +2902,6 @@ static int set_report_rate(void *private_data, struct gti_report_rate_cmd *cmd)
 
 	write[0] = (u8) FTS_CMD_CUSTOM_W;
 	write[1] = (u8) CUSTOM_CMD_REPORT_RATE;
-	write[2] = (goog_get_max_touch_report_rate(info->gti) == cmd->setting)? 0 : 1;
 	write[3] = MSEC_PER_SEC * 10 / cmd->setting;
 
 	ret = fts_write(info, write, sizeof(write));
@@ -4686,9 +4679,6 @@ static int fts_interrupt_install(struct fts_ts_info *info)
 	install_handler(info, STATUS_UPDATE, status);
 	install_handler(info, USER_REPORT, user_report);
 
-	error = goog_request_threaded_irq(info->gti, info->client->irq, fts_isr,
-			fts_interrupt_handler, IRQF_ONESHOT | IRQF_TRIGGER_LOW,
-			FTS_TS_DRV_NAME, info);
 	info->irq_enabled = true;
 
 	if (error) {
@@ -5161,8 +5151,6 @@ static void fts_resume(struct fts_ts_info *info)
 	if (!info->sensor_sleep) return;
 
 	fts_pinctrl_setup(info, true);
-	if (goog_get_lptw_triggered(info->gti) == true)
-		check_finger_status(info);
 	fts_system_reset(info);
 	info->resume_bit = 1;
 	fts_mode_handler(info, 0);
@@ -5521,13 +5509,12 @@ static int parse_dt(struct device *dev, struct fts_hw_platform_data *bdata)
 		}
 	}
 
-	bdata->irq_gpio = of_get_named_gpio_flags(np, "st,irq-gpio", 0, NULL);
+	bdata->irq_gpio = of_get_named_gpio(np, "st,irq-gpio", 0);
 	dev_info(dev, "irq_gpio = %d\n", bdata->irq_gpio);
 
 	if (of_property_read_bool(np, "st,reset-gpio")) {
-		bdata->reset_gpio = of_get_named_gpio_flags(np,
-							    "st,reset-gpio", 0,
-							    NULL);
+		bdata->reset_gpio = of_get_named_gpio(np,
+							    "st,reset-gpio", 0);
 		dev_info(dev, "reset_gpio = %d\n", bdata->reset_gpio);
 	} else
 		bdata->reset_gpio = GPIO_NOT_DEFINED;
@@ -5647,7 +5634,6 @@ static int fts_probe(struct spi_device *client)
 				__func__, retval);
 		}
 
-		info->dma_mode = goog_check_spi_dma_enabled(client);
 	}
 	dev_info(&client->dev, "SPI interface...\n");
 	bus_type = BUS_SPI;
@@ -5867,7 +5853,6 @@ static int fts_probe(struct spi_device *client)
 	dev_info(info->dev, "SET Device File Nodes:\n");
 	/* sysfs stuff */
 	info->attrs.attrs = fts_attr_group;
-	info->attrs.bin_attrs = fts_bin_attr_group;
 	error = sysfs_create_group(&client->dev.kobj, &info->attrs);
 	if (error) {
 		dev_err(info->dev, "ERROR: Cannot create sysfs structure!\n");
@@ -5907,14 +5892,7 @@ static int fts_probe(struct spi_device *client)
 	options->calibrate = calibrate;
 	options->selftest = selftest;
 
-	info->gti = goog_touch_interface_probe(
-		info, info->dev, info->input_dev, gti_default_handler, options);
 
-	retval = goog_pm_register_notification(info->gti, &fts_pm_ops);
-	if (retval < 0) {
-		dev_info(info->dev, "Failed to register gti pm");
-		goto ProbeErrorExit_6;
-	}
 #endif
 
 	if (info->fwu_workqueue)
@@ -5965,7 +5943,7 @@ ProbeErrorExit_0:
 static int fts_remove(struct i2c_client *client)
 {
 #else
-static int fts_remove(struct spi_device *client)
+static void fts_remove(struct spi_device *client)
 {
 #endif
 
@@ -6004,7 +5982,7 @@ static int fts_remove(struct spi_device *client)
 	/* free all */
 	kfree(info);
 
-	return OK;
+	return;
 }
 
 #ifdef CONFIG_PM

@@ -6,6 +6,7 @@ fts_touch_spi-y := fts_lib/ftsCompensation.o \
 		fts_lib/ftsFrame.o \
 		fts_lib/ftsIO.o \
 		fts_lib/ftsTest.o \
+		fts_lib/ftsTime.o \
 		fts_lib/ftsTool.o \
 		fts_lib/ftsFlash.o \
 		fts_lib/ftsGesture.o \
