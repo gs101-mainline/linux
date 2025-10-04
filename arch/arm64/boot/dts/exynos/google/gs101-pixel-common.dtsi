@@ -788,7 +788,7 @@
 	spitouch: touchscreen@0 {
 		spi-max-frequency = <10000000>;
 		reg = <0>;
-		pinctrl-names = "ts_active";
+		pinctrl-names = "pmx_ts_active";
 		pinctrl-0 = <&ts_irq &ts_reset &ap2aoc &aoc2ap_irq
 			     &spi11_bus &spi11_cs>;
 		vdd-supply = <&ldo25m_reg>;
