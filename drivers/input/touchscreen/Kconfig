@@ -1213,6 +1213,25 @@ config TOUCHSCREEN_RM_TS
 	  To compile this driver as a module, choose M here: the
 	  module will be called raydium_i2c_ts.
 
+config TOUCHSCREEN_SEC_TS
+        tristate "Samsung Electronics Touchscreen"
+        depends on I2C || SPI
+        select TOUCHSCREEN_HEATMAP
+        help
+          Say Y here if you want support for SEC touchscreen controllers.
+          If unsure, say N.
+
+          To compile this driver as a module, choose M here: the
+          module will be called sec_ts.
+
+config TOUCHSCREEN_HEATMAP
+	tristate "Heatmap support for touchscreen"
+	depends on (TOUCHSCREEN_FTS || TOUCHSCREEN_SEC_TS)
+	select VIDEOBUF2_VMALLOC
+	help
+	  Do not explicitly select this option. The drivers that utilize
+	  this module must select this in their Kconfig.
+
 config TOUCHSCREEN_SILEAD
 	tristate "Silead I2C touchscreen"
 	depends on I2C
