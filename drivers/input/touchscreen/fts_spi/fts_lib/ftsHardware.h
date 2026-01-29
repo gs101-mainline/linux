@@ -22,7 +22,7 @@
 #define FTS_HARDWARE_H
 
 /*DIGITAL CHIP INFO*/
-#define SALIXP
+#define ALIX
 
 #ifdef ALIX
 #define DCHIP_ID_0 0x36 /* /< LSB chip ID for FTM5 */

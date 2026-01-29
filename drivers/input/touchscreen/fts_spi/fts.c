@@ -5074,6 +5074,11 @@ ProbeErrorExit_3:
 ProbeErrorExit_2:
 	if (info->ts_pinctrl)
 		devm_pinctrl_put(info->ts_pinctrl);
+	if (info->gpio_has_request) {
+		fts_gpio_setup(info->board->irq_gpio, false, 0, 0);
+		if (info->board->reset_gpio >= 0)
+			fts_gpio_setup(info->board->reset_gpio, false, 0, 0);
+	}
 
 ProbeErrorExit_1:
 	kfree(info);
