@@ -33,4 +33,7 @@
 	st,max-coords = <1079 2399>;
 	st,udfps-coords = <540 1769>;
 	st,touch_offload_id = /bits/ 8 <'0' '0' 'o' '6'>;
+
+	fts,x-max = <1080>;
+	fts,y-max = <2400>;
 };
