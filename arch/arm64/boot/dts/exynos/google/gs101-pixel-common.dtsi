@@ -374,12 +374,12 @@
 			};
 
 
-			ldo25m {
+			s2mpg10_ldo25m: ldo25m {
 				/* touch */
 				regulator-name = "dvdd_tsp";
 			};
 
-			ldo26m {
+			s2mpg10_ldo26m: ldo26m {
 				/* touch */
 				regulator-name = "avdd_ts";
 			};
@@ -896,10 +896,23 @@
 		status = "okay";
 		spi-max-frequency = <10000000>;
 		reg = <0>;
-		pinctrl-names = "ts_active";
+		pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
 		pinctrl-0 = <&ts_irq &ts_reset &ap2aoc &aoc2ap_irq
 			     &spi11_bus &spi11_cs>;
-		//vdd-supply = <&m_ldo25_reg>;
-		//avdd-supply = <&m_ldo26_reg>;
+		pinctrl-1 = <&ts_irq &ts_reset &ap2aoc &aoc2ap_irq
+			     &spi11_bus &spi11_cs>;
+		fts,irq-gpio = <&gpa9 0 GPIO_ACTIVE_LOW>;
+		fts,irq-flags = <0x2008>; /* IRQF_TRIGGER_LOW | IRQF_ONESHOT */
+		fts,reset-gpio-enable;
+		fts,reset-gpio = <&gpp26 0 GPIO_ACTIVE_LOW>;
+		fts,bus-reg-name = "vdd";
+		fts,pwr-reg-name = "avdd";
+		vdd-supply = <&s2mpg10_ldo25m>;
+		avdd-supply = <&s2mpg10_ldo26m>;
+		controller-data {
+			samsung,spi-feedback-delay = <1>;
+			samsung,spi-chip-select-mode = <0>;
+			cs-clock-delay = <2>;
+		};
 	};
 };
